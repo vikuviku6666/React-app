@@ -1,11 +1,12 @@
 import React from 'react';
+import { Nav } from './components/NavBar/Nav'
 import './App.scss';
 
 function App() {
-  let name: string = "karl";
+ 
   return (
     <div className="App">
-    Learn React Yes we are learning with {name}
+   <Nav/>
     </div>
   );
 }
