@@ -1,0 +1,229 @@
+import { boolean } from "@storybook/addon-knobs";
+import React from "react";
+import { ButtonProps } from '../stories/Button';
+//Children
+interface Props {
+  children?: React.ReactNode;
+}
+
+// Another Child interface
+interface AnotherSpecificProps { }
+const AnotherComponenet: React.FC<AnotherSpecificProps> = ({ children }) => { };
+// even with omitted props it is still working
+
+const Component: React.FC = ({ children }) => {};
+//Events
+
+interface Props {
+  // Use the specific HTML element targeted
+  onClick?: (Event: MouseEvent<HTMLButtonElement>) => void;
+}
+
+//Forwarding Props
+
+//to forward a named props object to an element
+interface Props {
+  buttonProps?: JSX.IntrinsicElements["button"];
+}
+
+const Container = ({ buttonProps }: Props) => (
+  <div>
+    <button {...buttonProps}></button>
+  </div>
+);
+
+// To forward top-level props to an element
+type ButtonProps = JSX.IntrinsicElements["button"];
+interface Props extends ButtonProps {}
+const ExtendedButton = (props: Props) => <button {...props} />;
+
+// Additional props to the nested components
+
+ interface ComponentProps {
+    prop: boolean;
+    propAnother: string;
+}
+
+const Component: React.FC<ComponentProps> = ({ prop, propanother }) => {
+    return (
+        <div>
+            {prop && propAnother}
+        </div>
+    );
+}
+
+interface ComplexComponentProps {
+    componentProps?: Partial<React.ComponentProps<typeof Component>>
+}
+
+const ComplexComponent: React.FC<ComplexComponentProps> = ({ componentProps }) => {
+    return (
+        <div>
+            <Component prop={true} propAnother="string" {...componentProps} />
+            
+        </div>
+    );
+}
+
+// somewhre else 
+<ComplexComponent />
+< ComplexComponent componentProps={{prop: false}}/>
+  // without Partial you should pass all required props, so partial is very useful  
+
+//Styles
+declare interface StyleProps {
+    style?: React.CSSProperties
+    className?: string
+}
+ 
+//Button.tsx
+
+interface ButtonProps extends StyleProps {
+    label: string
+}
+const Button = ({ label, ...styleProps }: ButtonProps) => (
+    <button {...styleProps}>{label}</button>
+)
+
+//Refs
+
+//Element refs:
+
+const liRef = useRef<HTMLLIElement>(null)
+
+// Other refs are possible too:
+const valueRef = useRef<number>(0)
+
+
+// React is a popular library for creating user interfaces.
+// It provides a JavaScript abstraction for creating view
+// components using a JavaScript language extension called
+// JSX.
+
+// TypeScript supports JSX, and provides a rich set of
+// type tools to richly model how components connect.
+
+// To understand how TypeScript works with React components
+// you may want a primer on generics:
+//
+// - example:generic-functions
+// - example:generic-classes
+
+// First we'll look at how generic interfaces are used to map
+// React components. This is a faux-React functional component:
+
+type FauxactFunctionComponent<Props extends {}> =
+  (props: Props, context?: any) => FauxactFunctionComponent<any> | null | JSX.Element
+
+
+// Roughly:
+//
+// FauxactFunctionComponent is a generic function which relies on
+// another type, Props. Props has to be an object (to make sure
+// you don't pass a primitive) and the Props type will be
+// re-used as the first argument in the function.
+
+// To use it, you need a props type:
+
+interface DateProps { iso8601Date: string, message: string }
+
+// We can then create a DateComponent which uses the
+// DateProps interface, and renders the date.
+
+const DateComponent: FauxactFunctionComponent<DateProps> =
+  (props) => <time dateTime={props.iso8601Date}>{props.message}</time>
+
+// This creates a function which is generic with a Props
+// variable which has to be an object. The component function
+// returns either another component function or null.
+
+
+// The other component API is a class-based one.Here's a
+// simplified version of that API:
+
+interface FauxactClassComponent<Props extends {}, State = {}> {
+  props: Props
+  state: State
+
+  setState: (prevState: State, props: Props) => Props
+  callback?: () => void
+  render(): FauxactClassComponent<any> | null
+}
+
+// Because this class can have both Props and State - it has
+// two generic arguments which are used throughout the class.
+
+// The React library comes with it's own type definitions
+// like these but are much more comprehensive. Let's bring
+// those into our playground and explore a few components.
+
+import * as React from 'react';
+
+// Your props are your public API, so it's worth taking the
+// time to use JSDoc to explain how it works:
+
+export interface Props {
+  /** The user's name */
+  name: string;
+  /** Should the name be rendered in bold */
+  priority?: boolean
+}
+
+const PrintName: React.FC<Props> = (props) => {
+  return (
+    <div>
+      <p style={{ fontWeight: props.priority ? "bold" : "normal" }}>{props.name}</p>
+    </div>
+  )
+}
+
+// You can play with the new component's usage below:
+
+const ShowUser: React.FC<Props> = (props) => {
+  return <PrintName name="Ned" />
+}
+
+// TypeScript supports providing intellisense inside
+// the {} in an attribute
+
+let username = "Cersei"
+const ShowStoredUser: React.FC<Props> = (props) => {
+  return <PrintName name={username} priority />
+}
+
+// TypeScript works with modern React code too, here you can
+// see that count and setCount have correctly been inferred
+// to use numbers based on the initial value passed into
+// useState.
+
+import { useState, useEffect } from 'react';
+
+const CounterExample = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+
+// React and TypeScript is a really, really big topic
+// but the fundamentals are pretty small: TypeScript
+// supports JSX, and the rest is handled by the React
+// typings from Definitely Typed.
+
+// You can learn more about using React with TypeScript
+// from these sites:
+//
+// https://github.com/typescript-cheatsheets/react-typescript-cheatsheet
+// https://egghead.io/courses/use-typescript-to-develop-react-applications
+// https://levelup.gitconnected.com/ultimate-react-component-patterns-with-typescript-2-8-82990c516935
+
