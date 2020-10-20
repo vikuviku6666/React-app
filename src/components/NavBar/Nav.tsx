@@ -19,7 +19,7 @@ export const Nav: React.FC<Props> = (props) => {
   };
   return (
     <div>
-      <h1>
+      <h1 className="nav-header">
         Hi i am using sass. my name is {props.firstName} {props.lastName}{" "}
       </h1>
       <p>{count}</p>
